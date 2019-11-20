@@ -1,0 +1,15 @@
+form {
+    height:80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+form * {
+    margin-bottom:10px;
+    margin-left:10px;
+}
+
+form h5 {
+    margin-top: 20px;
+}

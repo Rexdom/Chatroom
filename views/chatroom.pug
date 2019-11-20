@@ -1,0 +1,31 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/stylesheets/chatroom.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+
+block content
+    main.container
+        div.row
+            div.col-sm-9.col-12.chat
+                div#chatbox.my-0.p-3.rounded.shadow-sm.bg-dark.text-white
+                    h2.border-bottom.border-gray.pb-2.mb-0.text-center Chatroom
+                    if !user
+                        |you need to log in to join the chatroom
+                form#input.my-1.p-1.rounded.shadow-sm.bg-dark.text-white(method='GET' action='')
+                    div.input-group
+                        if user
+                            input.form-control(type='text' placeholder='Input your messgae here')
+                            div.input-group-append
+                                button#submit.btn.btn-secondary(type='submit') submit
+                        else
+                            input.form-control(type='text' placeholder='Log in to make your comment' disabled)
+            div.col-sm-3.col-12
+                div#userList.my-0.p-1.rounded.shadow-sm.bg-dark.text-white
+                    h4.border-bottom.border-gray.pb-2.mb-0.text-center User in chatroom
+                    div#user
+
+
+block file
+    if user
+        script(src='/javascripts/chatconnect.js')

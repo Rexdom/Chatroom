@@ -1,0 +1,24 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/stylesheets/stream.css')
+
+block content
+    div.row
+        div.col-12.col-md-2.col-sm-3.sidebar.bg-light
+            form.bd-search.align-items-center.d-flex.pt-3
+                input.form-control(type='search' placeholder='Search user')
+                button.searchButton(type='button') search
+            div#game_list.py-2.text-center.list-group
+                each game in game_list
+                    a.list-group-item.list-group-item-action(id=game.id href="#")
+                        img.game_preview(src=game.box_art_url)
+                        div #{game.name}
+        div.col-12.col-md-10.col-sm-9
+            div.border-bottom.mb-3
+                h2#title Most viewer
+            div#content.row.my-4
+
+
+block file
+    script(src='/javascripts/streamBrowse.js')

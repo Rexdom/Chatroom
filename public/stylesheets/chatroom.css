@@ -1,0 +1,35 @@
+body{
+    padding:60px 0 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+#chatbox {
+    height: calc(100vh - 140px);
+    overflow-y:scroll;
+}
+
+#chatbox > p {
+    font-size: calc(1vw + 10px);
+    margin:calc(0.3vh);
+}
+
+#userList {
+    overflow-y:scroll;
+    height:90%
+}
+
+@media (max-width: 576px) {
+    #userList {
+        display: none;
+    }
+
+    .chat {
+        height: calc(100vh - 60px);
+        overflow-y:hidden;
+    }
+
+    #chatbox {
+        height: 70vh;
+    }
+}

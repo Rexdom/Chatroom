@@ -1,0 +1,11 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/stylesheets/stream.css')
+
+block content
+    div#content.row
+
+block file
+    if user
+        script(src='/javascripts/streamFollowing.js')
