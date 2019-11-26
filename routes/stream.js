@@ -80,7 +80,7 @@ router.get('/following/list', function(req, res, next) {
   var loginUser = session.loginUser;
   if (!loginUser)
     res.json({data:[]})
-  else
+  else {
     User.findOne({ user_name: loginUser }, 'streams').exec(async function(err, result){
       if (err) return next(err);
       if (result.streams.length==0) res.json({data:[]});
@@ -98,7 +98,8 @@ router.get('/following/list', function(req, res, next) {
         following_json.game=result;
         res.json(following_json);
       });
-    });;
+    });
+  };
 });
 
 router.post('/follow', function(req, res, next) {
