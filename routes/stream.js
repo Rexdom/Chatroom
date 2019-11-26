@@ -78,9 +78,9 @@ router.get('/following', function(req, res, next) {
 router.get('/following/list', function(req, res, next) {
   var session = req.session;
   var loginUser = session.loginUser;
-  if (!loginUser)
+  if (!loginUser) {
     res.json({data:[]})
-  else {
+  } else {
     User.findOne({ user_name: loginUser }, 'streams').exec(async function(err, result){
       if (err) return next(err);
       if (result.streams.length==0) res.json({data:[]});
