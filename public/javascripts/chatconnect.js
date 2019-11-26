@@ -2,7 +2,7 @@ let chatBody = document.getElementById('chatbox');
 let listArea = document.getElementById('user');
 let form = document.querySelector('form');
 
-const socket = io('ws://localhost:3000');
+const socket = io();
 
 let user='';
 
@@ -10,6 +10,7 @@ window.onload = async function() {
     const result = await fetch('/loginUser', {method: 'GET'});
     const json = await result.json();
     user=json.user;
+    console.log(user);
     socket.emit('getMessage', user);
 };
 

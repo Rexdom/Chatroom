@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+var MemoryStore = require('session-memory-store')(session);
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -34,6 +35,7 @@ app.use(session({
     secret: 'secret', 
     saveUninitialized: false, 
     resave: false,
+    store: new MemoryStore()
 }));
 
 app.use('/', indexRouter);
