@@ -83,21 +83,24 @@ router.get('/following/list', function(req, res, next) {
   } else {
     User.findOne({ user_name: loginUser }, 'streams').exec(async function(err, result){
       if (err) return next(err);
-      if (result.streams.length==0) res.json({data:[]});
-      let user_url='https://api.twitch.tv/helix/streams?'
-      for (i=0;i<result.streams.length;i++) {
-        user_url+='user_id='+result.streams[i]+"&";
-      }
-      let following_result = await fetch(user_url, {
-        method: 'GET', 
-        headers: {'Client-ID':'rorlgler8hzzqhqof3l93edydugwya'},
-      });
-      let following_json = await following_result.json();
-      Game.find().exec( function(err, result){
-        if (err) return next(err);
-        following_json.game=result;
-        res.json(following_json);
-      });
+      if (result.streams.length==0) {
+        res.json({data:[]});
+      } else {
+        let user_url='https://api.twitch.tv/helix/streams?'
+        for (i=0;i<result.streams.length;i++) {
+          user_url+='user_id='+result.streams[i]+"&";
+        }
+        let following_result = await fetch(user_url, {
+          method: 'GET', 
+          headers: {'Client-ID':'rorlgler8hzzqhqof3l93edydugwya'},
+        });
+        let following_json = await following_result.json();
+        Game.find().exec(function(err, result){
+          if (err) return next(err);
+          following_json.game=result;
+          res.json(following_json);
+        });
+      }      
     });
   };
 });
