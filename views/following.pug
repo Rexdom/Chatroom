@@ -4,7 +4,38 @@ block head
     link(rel='stylesheet', href='/stylesheets/stream.css')
 
 block content
-    div#content.row
+    div.col-12
+        
+        div#content(display="none")
+            div.border-bottom.mb-3
+                h2 Online
+            div.text-center.loading
+                div(class="lds-roller")
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                div Loading
+            div#online.row.my-4                
+            div.border-bottom.mb-3
+                h2 Offline
+            div.text-center.loading
+                div(class="lds-roller")
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                div Loading
+            div#offline.row.my-4
+                
 
 block file
     if user

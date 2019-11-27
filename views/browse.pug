@@ -6,8 +6,8 @@ block head
 block content
     div.row
         div.col-12.col-md-2.col-sm-3.sidebar.bg-light
-            form.bd-search.align-items-center.d-flex.pt-3
-                input.form-control(type='search' placeholder='Search user')
+            form.bd-search.align-items-center.d-flex.pt-3#search
+                input.form-control#searchInput(type='search' placeholder='Search user')
                 button.searchButton(type='button') search
             div#game_list.py-2.text-center.list-group
                 each game in game_list
@@ -18,6 +18,17 @@ block content
             div.border-bottom.mb-3
                 h2#title Most viewer
             div#content.row.my-4
+            div.text-center.loading
+                div(class="lds-roller")
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                    div
+                div Loading
 
 
 block file
