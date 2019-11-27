@@ -7,11 +7,14 @@ body{
 #chatbox {
     height: calc(100vh - 140px);
     overflow-y:scroll;
+    overflow-x: hidden;
 }
 
 #chatbox > p {
     font-size: calc(1vw + 10px);
     margin:calc(0.3vh);
+    width:100%;
+    word-wrap: break-word;
 }
 
 #userList {
@@ -25,11 +28,11 @@ body{
     }
 
     .chat {
-        height: calc(100vh - 60px);
+        height: calc(100vh - 160px);
         overflow-y:hidden;
     }
 
     #chatbox {
-        height: 70vh;
+        height: 60vh;
     }
 }

@@ -10,9 +10,9 @@ window.onload = async function() {
     const result = await fetch('/loginUser', {method: 'GET'});
     const json = await result.json();
     user=json.user;
-    console.log(user);
-    socket.emit('getMessage', user);
 };
+
+socket.on('connect', () => socket.emit('getMessage'));
 
 socket.on('getMessage', (obj) => {
     let newElement=document.createElement("div");
@@ -51,13 +51,9 @@ socket.on('getMessageExcept', (obj) => {
     };
 });
 
-window.onbeforeunload = function() {
-    socket.emit("disConnection", user)
-};
-
 form.onsubmit= function(e){
     e.preventDefault();
     let message = e.target.querySelector('input').value;
-    socket.emit('getMessageAll', {user: user, message: message});
+    socket.emit('getMessageAll', message);
     e.target.querySelector('input').value='';
 }

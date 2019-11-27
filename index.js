@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('./app');
+var app = require('./app').app;
 var debug = require('debug')('chatroom:server');
 var http = require('http');
 
@@ -21,25 +21,31 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-const io = require('socket.io')(server, { serveClient: false });
+var io = require('./app').io;
+io.attach(server);
 let userList=[];
 io.on('connection', (socket) => {
 
-  socket.on('getMessage', user => {
+  socket.on('getMessage', () => {
+    let user=socket.handshake.session.loginUser;
     userList.push(user);
     socket.emit("getMessage", {list: userList, message: user + ', Welcome to the chatroom!'});
     socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
   });
   
-  socket.on('getMessageAll', obj => {
-    io.sockets.emit('getMessageAll', {user:obj.user, message:obj.user + ' : ' + obj.message});
+  socket.on('getMessageAll', message => {
+    let user=socket.handshake.session.loginUser;
+    io.sockets.emit('getMessageAll', {user:user, message:user + ' : ' + message});
   });
 
-  socket.on("disConnection", user => {
+  socket.on('disconnecting', () => {
+    let user=socket.handshake.session.loginUser;
     let index = userList.indexOf(user);
-    userList.splice(index,1);
+    if (index!==-1) {
+      userList.splice(index,1);
+    }
     socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has leaved the chatroom'});
-  });  
+  });
 
 });
 

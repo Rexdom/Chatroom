@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var MemoryStore = require('session-memory-store')(session);
+var io = require('socket.io')();
+var sharedsession = require("express-socket.io-session");
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -30,13 +32,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-    name: 'identityKey', 
-    secret: 'secret', 
-    saveUninitialized: false, 
-    resave: false,
-    store: new MemoryStore()
-}));
+sessionInfo=session({
+  name: 'identityKey', 
+  secret: 'secret', 
+  saveUninitialized: false, 
+  resave: false,
+  store: new MemoryStore()
+});
+app.use(sessionInfo);
+io.use(sharedsession(sessionInfo));
+
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
@@ -62,5 +67,8 @@ app.use(function(err, req, res, next) {
   res.render('error', {user: loginUser?loginUser:null});
 });
 
-module.exports = app;
+module.exports = {
+  app:app,
+  io:io
+};
 
