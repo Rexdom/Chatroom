@@ -51,17 +51,14 @@ img.game_preview{
 }
 
 .loading {
+    min-height:40vh;
     position: relative;
     top:40%;
     font-size: 1.2rem;
 }
 
-#online{
-    min-height:500px;
-}
-
-#offline{
-    min-height:500px;
+#online,#offline{
+    min-height:40vh;
 }
 
 .lds-roller {

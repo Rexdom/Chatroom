@@ -3,11 +3,9 @@ let offline = document.getElementById('offline');
 let loading = document.getElementsByClassName('loading');
 let gameList=[];
 
-function addStream(followingList,area) {
-    online.style.display='none';
-    offline.style.display='none';
-    loading[0].style.display='block';
-    loading[1].style.display='block';
+function addStream(followingList,area,loading) {
+    area.style.display='none';
+    loading.style.display='block';
     let unknownGameList=[];
     for (let i=0; i<followingList.length; i++){
         let outterBox = document.createElement("div");
@@ -63,12 +61,11 @@ function addStream(followingList,area) {
             }
         });
     };
+    if (area.innerHTML=='') area.innerHTML='<p class="h7">No stream found</p>'
     setTimeout(function(){ 
-        online.style.display='flex';
-        offline.style.display='flex';
-        loading[0].style.display='none';
-        loading[1].style.display='none';
-    }, 2000);
+        area.style.display='flex';
+        loading.style.display='none';
+    }, 500);
 };
 
 async function handleClick(event) {
@@ -141,8 +138,8 @@ window.onload = async function() {
     const offlineList = json.offline;
     gameList=json.game;
 
-    addStream(onlineList,online);
-    addStream(offlineList,offline);
+    addStream(onlineList,online,loading[0]);
+    addStream(offlineList,offline,loading[1]);
 };
 
 offline.addEventListener("click", (e)=>handleClick(e));
