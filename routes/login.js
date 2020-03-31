@@ -14,16 +14,15 @@ router.get('/login', function(req, res, next) {
 
 router.post('/login', function(req,res,next) {
     User.findOne({account:req.body.account, password:req.body.password})
-        .exec(function(err, result){
+        .exec(async function(err, result){
             if (err) return next(err);
-            if (!result) res.render('login');
+            if (!result) res.render('login', {title:"Log in"});
             else {
-                req.session.loginUser=result.user_name;
-                req.session.url=result.url;
+                req.session.loginUser=await result.user_name;
+                req.session.url=await result.url;
                 res.redirect('/');
             }
         })
-
 });
 
 router.get('/signup', function(req, res, next) {
@@ -36,6 +35,13 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup', function(req,res,next) {
+    User.findOne({account:req.body.account})
+        .exec(async function(err, result){
+            if (err) return next(err);
+            if (result) {
+                res.render('signup', {title:"Player already exist"});
+            }
+        })
     var user = new User(
         {
             account: req.body.account,
@@ -44,9 +50,15 @@ router.post('/signup', function(req,res,next) {
         });
     user.save(function (err) {
         if (err) { return next(err); }
-        req.session.loginUser=req.body.user_name
-        req.session.url=result.url;
-        res.redirect('/')
+        User.findOne({account:req.body.account})
+        .exec(async function(err, result){
+            if (err) return next(err)
+            else {
+                req.session.loginUser=await result.user_name;
+                req.session.url=await result.url;
+                res.redirect('/');
+            }
+        })
     });
 });
 
