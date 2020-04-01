@@ -1,13 +1,25 @@
 body{
     padding:60px 0 0 0;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+}
+
+.row{
+    height: calc(100vh - 60px);
+    overflow-y:hidden;
+}
+
+.chat {
+    display:flex;
+    flex-direction:column;
 }
 
 #chatbox {
-    height: calc(100vh - 140px);
-    overflow-y:scroll;
+    /* height: calc(100vh - 140px); */
+    overflow-y: auto;
     overflow-x: hidden;
+    flex:1;
+    
 }
 
 #chatbox > p {
@@ -18,21 +30,22 @@ body{
 }
 
 #userList {
-    overflow-y:scroll;
+    overflow-y:auto;
     height:90%
 }
 
-@media (max-width: 576px) {
-    #userList {
+@media (max-width: 575px) {
+    #userListWrap {
         display: none;
     }
 
     .chat {
-        height: calc(100vh - 160px);
-        overflow-y:hidden;
+        position:fixed;
+        bottom:10px;
+        top:60px;
+        left:0;
+        right:0;
+        padding:0;
     }
 
-    #chatbox {
-        height: 60vh;
-    }
 }

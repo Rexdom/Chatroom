@@ -50,7 +50,7 @@ router.get('/browse', async function(req, res, next) {
   var session = req.session;
   var loginUser = session.loginUser;
   var url = session.url;
-  let top_game = await fetch('https://api.twitch.tv/helix/games/top?first=100', {
+  let top_game = await fetch('https://api.twitch.tv/helix/games/top?first=30', {
     method: 'GET', 
     headers: {'Client-ID':'rorlgler8hzzqhqof3l93edydugwya'},
   });
@@ -90,7 +90,7 @@ router.get('/following', function(req, res, next) {
     var loginUser = session.loginUser;
     var url = session.url;
     if (!loginUser)
-      res.render('login');
+      res.redirect('../../login');
     else
       res.render('following', {user: loginUser?loginUser:null, url: url?url:null, page:"Stream", title:"Stream - Following"});
 });
@@ -107,7 +107,7 @@ router.get('/following/list', function(req, res, next) {
         res.json({online:[],offline:[]});
       } else {
         let user_url='https://api.twitch.tv/helix/streams?'
-        for (i=0;i<result.streams.length;i++) {
+        for (let i=0;i<result.streams.length;i++) {
           user_url+='user_id='+result.streams[i]+"&";
         }
         let online_result = await fetch(user_url, {
@@ -115,16 +115,27 @@ router.get('/following/list', function(req, res, next) {
           headers: {'Client-ID':'rorlgler8hzzqhqof3l93edydugwya'},
         });
         let online_json = await online_result.json();
-        let offline_id = result.streams.filter(id => (online_json.data.id!==id));
-        let offline_url='https://api.twitch.tv/helix/users?';
-        for (i=0;i<offline_id.length;i++) {
-          offline_url+='id='+offline_id[i]+"&";
+        let offline_id = result.streams;
+        if (online_json.data.length>0) {
+          let index=[];
+          for (let i=0;i<online_json.data.length;i++){
+            index.push(result.streams.indexOf(online_json.data[i].user_id))
+          }
+          offline_id = result.streams.filter((e,i)=>!index.includes(i))
         }
-        let offline_result = await fetch(offline_url, {
-          method: 'GET', 
-          headers: {'Client-ID':'rorlgler8hzzqhqof3l93edydugwya'},
-        });
-        let offline_json = await offline_result.json();
+        // result.streams.filter(id => (!online_json.data.user_id.includes(id)));
+        let offline_json = {data:[]};
+        if (offline_id.length>0) {
+          let offline_url='https://api.twitch.tv/helix/users?';
+          for (let i=0;i<offline_id.length;i++) {
+            offline_url+='id='+offline_id[i]+"&";
+          }
+          let offline_result = await fetch(offline_url, {
+            method: 'GET', 
+            headers: {'Client-ID':'rorlgler8hzzqhqof3l93edydugwya'},
+          });
+          offline_json = await offline_result.json();
+        } 
         let all_result={online:online_json.data,offline:offline_json.data}
         Game.find().exec(function(err, result){
           if (err) return next(err);
