@@ -28,13 +28,19 @@ io.on('connection', (socket) => {
 
   socket.on('getMessage', () => {
     let user=socket.handshake.session.loginUser;
-    userList.push(user);
+    if (!user) socket.disconnect();
+    if (!userList.includes(user)) {
+      userList.push(user);
+      socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
+    } else {
+      userList.push(user);
+    };
     socket.emit("getMessage", {list: userList, message: user + ', Welcome to the chatroom!'});
-    socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
   });
   
   socket.on('getMessageAll', message => {
     let user=socket.handshake.session.loginUser;
+    if (!user) socket.disconnect();
     io.sockets.emit('getMessageAll', {user:user, message:user + ' : ' + message});
   });
 
@@ -44,9 +50,10 @@ io.on('connection', (socket) => {
     if (index!==-1) {
       userList.splice(index,1);
     }
-    socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has leaved the chatroom'});
+    if (!userList.includes(user)){
+      socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has leaved the chatroom'});
+    }
   });
-
 });
 
 /**

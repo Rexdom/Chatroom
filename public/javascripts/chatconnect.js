@@ -2,7 +2,7 @@ let chatBody = document.getElementById('chatbox');
 let listArea = document.getElementById('user');
 let form = document.querySelector('form');
 
-const socket = io();
+const socket = io('',{reconnection: false});
 
 let user='';
 
@@ -20,9 +20,10 @@ socket.on('getMessage', (obj) => {
     newElement.classList.add("text-center", "text-white");
     chatBody.appendChild(newElement);
     listArea.innerHTML="";
-    for (i=0; i< obj.list.length; i++) {
+    const uniqeList = [... new Set(obj.list)]
+    for (i=0; i< uniqeList.length; i++) {
         let newUser = document.createElement("div");
-        newUser.innerHTML=obj.list[i];
+        newUser.innerHTML=uniqeList[i];
         listArea.appendChild(newUser);
     };
 });
@@ -49,6 +50,13 @@ socket.on('getMessageExcept', (obj) => {
         newUser.innerHTML=obj.list[i];
         listArea.appendChild(newUser);
     };
+});
+
+socket.on('disconnect', ()=>{
+    let newElement=document.createElement("div");
+    newElement.innerHTML='You are disconnected';
+    newElement.classList.add("text-center", "text-warning");
+    chatBody.appendChild(newElement);
 });
 
 form.onsubmit= function(e){

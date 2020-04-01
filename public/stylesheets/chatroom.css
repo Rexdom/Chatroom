@@ -15,11 +15,9 @@ body{
 }
 
 #chatbox {
-    /* height: calc(100vh - 140px); */
     overflow-y: auto;
     overflow-x: hidden;
     flex:1;
-    
 }
 
 #chatbox > p {
