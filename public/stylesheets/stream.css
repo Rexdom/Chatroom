@@ -16,6 +16,7 @@ body{
     height: calc(90vh);
     border-right: 1px solid rgba(0,0,0,.1);
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .bd-search{
