@@ -62,8 +62,8 @@ io.on('connection', (socket) => {
     accountSet[account].num=accountSet[account].num-1;
     if (accountSet[account].num == 0) {
       userList.splice(userList.indexOf(accountSet[account].user),1);
+      socket.broadcast.emit('getMessageExcept', {list: userList, message: accountSet[account].user + ' has leaved the chatroom'});
       delete accountSet[account];
-      socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has leaved the chatroom'});
     }
   });
 });
