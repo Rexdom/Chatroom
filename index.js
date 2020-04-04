@@ -33,37 +33,36 @@ io.on('connection', (socket) => {
     if (!account) socket.disconnect();
     if (!accountSet[account]) {
       userList.push(user);
-      accountSet[account]={user:user,socket:[socket]};
+      accountSet[account]={user:user,num:1};
       socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
     } else if (accountSet[account].user === user) {
-      accountSet[account].socket.push(socket);
+      accountSet[account].num=accountSet[account].num+1;
     } else {
       userList.push(user);
-      accountSet[account].socket.push(socket);
+      accountSet[account].num=accountSet[account].num+1;
+      // accountSet[account].socket.forEach((oldSocket)=>{
+      //   oldSocket.emit("getMessage", {message: 'You username has changed, please re-enter the chatroom '});
+      //   oldSocket.disconnect();
+      // })
+      userList.splice(userList.indexOf(accountSet[account].user),1);
+      socket.broadcast.emit('getMessageExcept', {list: userList, message: accountSet[account].user + ' has changed user name to '+user});
       accountSet[account].user=user;
-      accountSet[account].socket.forEach((oldSocket)=>{
-        oldSocket.emit("getMessage", {message: 'You username has changed, please re-enter the chatroom '});
-        oldSocket.disconnect();
-      })
-      socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
     }
     socket.emit("getMessage", {list: userList, message: user + ', Welcome to the chatroom!'});
   });
   
   socket.on('getMessageAll', message => {
-    let user=socket.handshake.session.loginUser;
-    if (!user) socket.disconnect();
+    let account=socket.handshake.session.account;
+    let user=accountSet[account].user
     io.sockets.emit('getMessageAll', {user:user, message:user + ' : ' + message});
   });
 
   socket.on('disconnecting', () => {
-    let user=socket.handshake.session.loginUser;
     let account=socket.handshake.session.account;
-    let index = accountSet[account].socket.indexOf(socket);
-    accountSet[account].socket.splice(index,1);
-    if (accountSet[account].socket.length == 0) {
+    accountSet[account].num=accountSet[account].num-1;
+    if (accountSet[account].num == 0) {
+      userList.splice(userList.indexOf(accountSet[account].user),1);
       delete accountSet[account];
-      userList.splice(userList.indexOf(user));
       socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has leaved the chatroom'});
     }
   });

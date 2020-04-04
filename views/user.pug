@@ -11,12 +11,12 @@ block content
             if warning
                 p.text-danger #{warning}
             label.text-left(for="user_name") New user name
-            input.form-control(type="text" name="user_name" placeholder="User Name" value=user autofocus="")
+            input.form-control(type="text" name="user_name" placeholder="User Name" value=user autofocus="" required)
             button.btn.btn-lg.btn-primary.btn-block(type="submit") Confirm
         form.col-12.col-md-6.mb-3.text-center(method="POST" action=url+"/password")
             h1.h4.mb-3.font-weight-normal.pb-2.border-bottom Change password
             label.text-left(for="password") Current password
-            input.form-control(type="password" name="password" required placeholder="Current Password" )
+            input.form-control(type="password" name="password" placeholder="Current Password" required)
             label.text-left(for="new_password") New password
-            input.form-control(type="password" name="new_password" required placeholder="New Password" )
+            input.form-control(type="password" name="new_password" placeholder="New Password" required)
             button.btn.btn-lg.btn-primary.btn-block(type="submit") Confirm
