@@ -6,6 +6,8 @@ block head
 block content
     form.form-signin.text-center(method="POST" action="")
         h1.h3.mb-3.font-weight-normal Please sign up
+        if warning
+            p.text-danger #{warning}
         div.text-left User Name:
         input.form-control(type="text" name="user_name" placeholder="User Name" required)
         div.text-left Account:

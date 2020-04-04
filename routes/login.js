@@ -34,32 +34,41 @@ router.get('/signup', function(req, res, next) {
         res.redirect('/')
 });
 
-router.post('/signup', function(req,res,next) {
+router.post('/signup', async function(req,res,next) {
     User.findOne({account:req.body.account})
-        .exec(async function(err, result){
+        .exec(function(err, result){
             if (err) return next(err);
             if (result) {
-                res.render('signup', {title:"Player already exist"});
+                res.render('signup', {title:"Sign up", warning:"Account already exist"});
+            } else {
+                User.findOne({user_name:req.body.user_name})
+                .exec(function(err, result){
+                    if (err) return next(err);
+                    if (result) {
+                    res.render('signup', {title:"Sign up", warning:`User name: "`+req.body.user_name+ `" already exist`});
+                    }else {
+                        var user = new User(
+                            {
+                                account: req.body.account,
+                                password: req.body.password,
+                                user_name: req.body.user_name,
+                            });
+                        user.save(function (err) {
+                            if (err) { return next(err); }
+                            User.findOne({account:req.body.account})
+                            .exec(async function(err, result){
+                                if (err) return next(err)
+                                else {
+                                    req.session.loginUser=await result.user_name;
+                                    req.session.url=await result.url;
+                                    res.redirect('/');
+                                }
+                            })
+                        });
+                    }
+                })
             }
         })
-    var user = new User(
-        {
-            account: req.body.account,
-            password: req.body.password,
-            user_name: req.body.user_name,
-        });
-    user.save(function (err) {
-        if (err) { return next(err); }
-        User.findOne({account:req.body.account})
-        .exec(async function(err, result){
-            if (err) return next(err)
-            else {
-                req.session.loginUser=await result.user_name;
-                req.session.url=await result.url;
-                res.redirect('/');
-            }
-        })
-    });
 });
 
 router.get('/logout', function(req,res,next) {
