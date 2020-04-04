@@ -45,10 +45,10 @@ io.on('connection', (socket) => {
       //   oldSocket.disconnect();
       // })
       userList.splice(userList.indexOf(accountSet[account].user),1);
-      socket.broadcast.emit('getMessageExcept', {list: userList, message: accountSet[account].user + ' has changed user name to '+user});
+      socket.broadcast.emit('getMessageExcept', {oldUser:accountSet[account].user, newUser: user, list: userList, message: accountSet[account].user + ' has changed user name to '+user});
       accountSet[account].user=user;
     }
-    socket.emit("getMessage", {list: userList, message: user + ', Welcome to the chatroom!'});
+    socket.emit("getMessage", {user: accountSet[account].user,list: userList, message: user + ', Welcome to the chatroom!'});
   });
   
   socket.on('getMessageAll', message => {

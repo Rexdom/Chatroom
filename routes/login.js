@@ -36,6 +36,9 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup', async function(req,res,next) {
+    if (req.body.user_name.length>20) {
+        res.render('signup', {title:"Sign up", warning:`User name should be no longer than 20 characters`});
+    }
     User.findOne({account:req.body.account})
         .exec(async function(err, result){
             if (err) return next(err);

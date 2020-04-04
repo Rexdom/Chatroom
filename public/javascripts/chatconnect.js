@@ -15,6 +15,7 @@ window.onload = async function() {
 socket.on('connect', () => socket.emit('getMessage'));
 
 socket.on('getMessage', (obj) => {
+    user=obj.user;
     let newElement=document.createElement("div");
     newElement.innerHTML=obj.message;
     newElement.classList.add("text-center", "text-white");
@@ -39,6 +40,7 @@ socket.on('getMessageAll', (obj) => {
 });
 
 socket.on('getMessageExcept', (obj) => {
+    if (obj.oldUser == user) user = obj.newUser
     let newElement=document.createElement("div");
     newElement.innerHTML=obj.message;
     newElement.classList.add("text-center", "text-muted");

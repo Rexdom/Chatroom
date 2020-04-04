@@ -16,6 +16,9 @@ router.get('/:id', function(req, res, next) {
 
 router.post('/:id/user_name', function(req,res,next) {
   var session = req.session;
+  if (req.body.user_name.length>20) {
+    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", warning:`User name should be no longer than 20 characters`});
+  }
   User.findOne({user_name:req.body.user_name})
     .exec(function(err, result){
         if (err) return next(err);
