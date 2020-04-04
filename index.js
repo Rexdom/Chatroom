@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
     } else if (accountSet[account].user === user) {
       accountSet[account].socket.push(socket);
     } else {
+      userList.push(user);
       accountSet[account].socket.push(socket);
       accountSet[account].user=user;
       accountSet[account].socket.forEach((oldSocket)=>{
