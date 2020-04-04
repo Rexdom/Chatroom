@@ -18,6 +18,7 @@ router.post('/login', function(req,res,next) {
             if (err) return next(err);
             if (!result) res.render('login', {title:"Log in"});
             else {
+                req.session.account=await req.body.account;
                 req.session.loginUser=await result.user_name;
                 req.session.url=await result.url;
                 res.redirect('/');
@@ -36,7 +37,7 @@ router.get('/signup', function(req, res, next) {
 
 router.post('/signup', async function(req,res,next) {
     User.findOne({account:req.body.account})
-        .exec(function(err, result){
+        .exec(async function(err, result){
             if (err) return next(err);
             if (result) {
                 res.render('signup', {title:"Sign up", warning:"Account already exist"});
@@ -59,6 +60,7 @@ router.post('/signup', async function(req,res,next) {
                             .exec(async function(err, result){
                                 if (err) return next(err)
                                 else {
+                                    req.session.account=await req.body.account;
                                     req.session.loginUser=await result.user_name;
                                     req.session.url=await result.url;
                                     res.redirect('/');

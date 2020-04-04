@@ -24,17 +24,28 @@ var server = http.createServer(app);
 var io = require('./app').io;
 io.attach(server);
 let userList=[];
+let accountSet={};
 io.on('connection', (socket) => {
 
   socket.on('getMessage', () => {
     let user=socket.handshake.session.loginUser;
-    if (!user) socket.disconnect();
-    if (!userList.includes(user)) {
+    let account=socket.handshake.session.account;
+    if (!account) socket.disconnect();
+    if (!accountSet[account]) {
       userList.push(user);
+      accountSet[account]={user:user,socket:[socket]};
       socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
+    } else if (accountSet[account].user === user) {
+      accountSet[account].socket.push(socket);
     } else {
-      userList.push(user);
-    };
+      accountSet[account].socket.push(socket);
+      accountSet[account].user=user;
+      accountSet[account].socket.forEach((oldSocket)=>{
+        oldSocket.emit("getMessage", {message: 'You username has changed, please re-enter the chatroom '});
+        oldSocket.disconnect();
+      })
+      socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has entered the chatroom'});
+    }
     socket.emit("getMessage", {list: userList, message: user + ', Welcome to the chatroom!'});
   });
   
@@ -46,11 +57,12 @@ io.on('connection', (socket) => {
 
   socket.on('disconnecting', () => {
     let user=socket.handshake.session.loginUser;
-    let index = userList.indexOf(user);
-    if (index!==-1) {
-      userList.splice(index,1);
-    }
-    if (!userList.includes(user)){
+    let account=socket.handshake.session.account;
+    let index = accountSet[account].socket.indexOf(socket);
+    accountSet[account].socket.splice(index,1);
+    if (accountSet[account].socket.length == 0) {
+      delete accountSet[account];
+      userList.splice(userList.indexOf(user));
       socket.broadcast.emit('getMessageExcept', {list: userList, message: user + ' has leaved the chatroom'});
     }
   });

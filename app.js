@@ -8,6 +8,8 @@ var MemoryStore = require('session-memory-store')(session);
 var io = require('socket.io')();
 var sharedsession = require("express-socket.io-session");
 
+var User = require('./models/user');
+
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 var chatroomRouter = require('./routes/chatroom');
@@ -42,6 +44,19 @@ sessionInfo=session({
 app.use(sessionInfo);
 io.use(sharedsession(sessionInfo));
 
+app.use(async function(req, res, next) {
+  var session = req.session;
+  var loginUser = session.loginUser;
+  var account = session.account;
+  if (account){
+    const result = await User.findOne({account:account})
+    if (result && loginUser !== result.user_name) {
+      console.log("need to change!")
+      req.session.loginUser = await result.user_name;
+    }
+    return next();
+  } else next();
+})
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
