@@ -15,6 +15,8 @@ block content
             button.btn.btn-lg.btn-primary.btn-block(type="submit") Confirm
         form.col-12.col-md-6.mb-3.text-center(method="POST" action=url+"/password")
             h1.h4.mb-3.font-weight-normal.pb-2.border-bottom Change password
+            if passWarning
+                p.text-danger #{warning}
             label.text-left(for="password") Current password
             input.form-control(type="password" name="password" placeholder="Current Password" required)
             label.text-left(for="new_password") New password

@@ -16,8 +16,8 @@ router.get('/:id', function(req, res, next) {
 
 router.post('/:id/user_name', function(req,res,next) {
   var session = req.session;
-  if (req.body.user_name.length>20) {
-    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", warning:`User name should be no longer than 20 characters`});
+  if (req.body.user_name.length>20 || req.body.user_name.length<1) {
+    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", warning:`User name should be within 1 to 20 characters`});
   } else {
     User.findOne({user_name:req.body.user_name})
     .exec(function(err, result){
@@ -36,6 +36,9 @@ router.post('/:id/user_name', function(req,res,next) {
 });
 
 router.post('/:id/password', function(req,res,next) {
+  if (password.length<1) {
+    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", passWarning:`Invalid password`});
+  }
   User.findByIdAndUpdate(req.params.id, {password: req.body.new_password}, {}, function (err) {
     if (err) { return next(err); }
     res.redirect('/');
