@@ -16,8 +16,8 @@ router.get('/:id', function(req, res, next) {
 
 router.post('/:id/user_name', function(req,res,next) {
   var session = req.session;
-  if (req.body.user_name.length>20 || req.body.user_name.length<1) {
-    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", warning:`User name should be within 1 to 20 characters`});
+  if (req.body.user_name.length>20 || req.body.user_name.length<1 || !req.body.user_name.match(/^\w+$/)) {
+    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", warning:`User name should be within 1 to 20 characters and only contains alphanumeric & underscore`});
   } else {
     User.findOne({user_name:req.body.user_name})
     .exec(function(err, result){
@@ -35,15 +35,20 @@ router.post('/:id/user_name', function(req,res,next) {
   }
 });
 
-router.post('/:id/password', function(req,res,next) {
-  if (req.body.new_password.length==0) {
-    var session = req.session;
-    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", passWarning:`New password should not be empty`});
+router.post('/:id/password', async function(req,res,next) {
+  var session = req.session;
+  if (!req.body.new_password.match(/^\w+$/)) {
+    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", passWarning:`New password is invalid`});
+  } else {
+    let checkPassword = await User.findOne({account:session.account, password: req.body.password})
+    if (!checkPassword) res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", passWarning:`Incorrect current password`});
+    else {
+      User.findByIdAndUpdate(req.params.id, {password: req.body.new_password}, {}, function (err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+      });
+    }
   }
-  User.findByIdAndUpdate(req.params.id, {password: req.body.new_password}, {}, function (err) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
 });
 
 module.exports = router;

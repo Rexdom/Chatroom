@@ -36,10 +36,10 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup', async function(req,res,next) {
-    if (req.body.user_name.length>20 || req.body.user_name.length<1) {
-        res.render('signup', {title:"Sign up", warning:`User name should be within 1 to 20 characters`});
-    }else if (req.body.account.length==0 || req.body.password.length==0){
-        res.render('signup', {title:"Sign up", warning:`Account and password should not be empty`});
+    if (req.body.user_name.length>20 || req.body.user_name.length<1 || !req.body.user_name.match(/^\w+$/)) {
+        res.render('signup', {title:"Sign up", warning:`User name should be within 1 to 20 characters and only contains alphanumeric & underscore`});
+    }else if (!req.body.account.match(/^\w+$/) || !req.body.password.match(/^\w+$/)){
+        res.render('signup', {title:"Sign up", warning:`Invalid account or password`});
     }else{
         User.findOne({account:req.body.account})
         .exec(async function(err, result){

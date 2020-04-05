@@ -51,7 +51,6 @@ app.use(async function(req, res, next) {
   if (account){
     const result = await User.findOne({account:account})
     if (result && loginUser !== result.user_name) {
-      console.log("need to change!")
       req.session.loginUser = await result.user_name;
     }
     return next();
