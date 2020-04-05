@@ -36,8 +36,8 @@ router.post('/:id/user_name', function(req,res,next) {
 });
 
 router.post('/:id/password', function(req,res,next) {
-  if (password.length<1) {
-    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", passWarning:`Invalid password`});
+  if (req.body.new_password.length==0) {
+    res.render('user', {user: session.loginUser, url:session.url, page:"User", title:"User information", passWarning:`New password should not be empty`});
   }
   User.findByIdAndUpdate(req.params.id, {password: req.body.new_password}, {}, function (err) {
     if (err) { return next(err); }
