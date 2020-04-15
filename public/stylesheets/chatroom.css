@@ -33,12 +33,17 @@ body{
     height:90%
 }
 
+#userTitle {
+    font-size:1.3rem;
+}
+
 @media (max-width: 575px) {
     #userListWrap {
         display: none;
     }
 
     .chat {
+        height: auto;
         position:fixed;
         bottom:10px;
         top:60px;

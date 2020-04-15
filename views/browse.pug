@@ -6,9 +6,10 @@ block head
 block content
     div.row
         div.col-12.col-md-2.col-sm-3.sidebar.bg-light
-            form.bd-search.align-items-center.d-flex.pt-3#search
-                input.form-control#searchInput(type='search' placeholder='Search user')
+            form#search.bd-search.align-items-center.d-flex.pt-3
+                input#searchInput.form-control(type='search' placeholder='Search user' required)
                 button.searchButton(type='button') search
+            div#warning.text-center.text-danger
             div#game_list.py-2.text-center.list-group
                 each game in game_list
                     a.list-group-item.list-group-item-action(id=game.id href="#")
